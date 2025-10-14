@@ -6,7 +6,7 @@ This is an experiment in frustration and lovepotion having a number of weirdly m
 
 This repository contains https://github.com/lovebrew/nest and https://dtinth.github.io/comic-mono-font/, both provided under the MIT license (see LICENSE.md for the rest of the text etc).
 
-## Nest:
+### Nest:
 (Copyright (c) 2020-2021 Jeremy S. Postelnek)
 
 ### Comic Mono:
