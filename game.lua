@@ -20,7 +20,7 @@ function game:enter(current, ...)
 		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒'),
 		full_circle_outline = gfx.newImageFont('fonts/full-circle-outline.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵', -2),
 		clock = gfx.newImageFont('fonts/clock.png', '0123456789:'),
-		hexa = gfx.newImage('images/' .. tostring(save.color) .. '/hexa_' .. tostring(save.reduceflashing) .. '.png'),
+		-- hexa = gfx.newImage('images/' .. tostring(save.color) .. '/hexa_' .. tostring(save.reduceflashing) .. '.png'),
 		sfx_move = love.audio.newSource('audio/sfx/move.mp3', 'static'),
 		sfx_bonk = love.audio.newSource('audio/sfx/bonk.mp3', 'static'),
 		sfx_swap = love.audio.newSource('audio/sfx/swap.mp3', 'static'),
@@ -58,7 +58,7 @@ function game:enter(current, ...)
 	}
 
 	for i = 1, 11 do
-		assets['hexa' .. i] = gfx.newQuad(-400 + (400 * i), 0, 400, 240, 4400, 240)
+		assets['hexa' .. i] = gfx.newImage('images/' .. tostring(save.color) .. '/hexa_' .. tostring(save.reduceflashing) .. "_" .. i .. '.png')
 	end
 
 	for i = 1, 5 do
@@ -757,7 +757,7 @@ function game:draw()
 	gfx.setColor(1, 1, 1, 1)
 
 	if vars.hexa <= 11 then
-		gfx.draw(assets.hexa, assets['hexa' .. floor(vars.hexa)], 0, 0)
+		gfx.draw(assets['hexa' .. floor(vars.hexa)], 0, 0)
 	end
 
 	if not vars.can_do_stuff then

@@ -3,9 +3,10 @@ function love.conf(t)
 	t.identity = 'HEXA'
 	t.window.title = 'HEXA'
 	t.window.icon = 'images/1/icon.png'
-	t.window.width = 400
-	t.window.height = 240
+	-- t.window.width = 400
+	-- t.window.height = 240
 	t.window.resizable = true
-	t.window.minwidth = 400
-	t.window.minheight = 240
+	-- t.window.minwidth = 400
+	-- t.window.minheight = 240
+	t.console = false
 end

@@ -1,3 +1,22 @@
+
+function hook(a, b)
+	print(debug.traceback())
+end
+
+-- debug.sethook(hook, "c")
+
+local nest
+if love._console then
+	ON_CONSOLE = love._console
+else
+	nest = require('nest').init{
+	console = "3ds"
+}
+end
+function love.graphics.newImageFont()
+	return love.graphics.newFont(ON_CONSOLE and "standard" or "ComicMono.ttf")
+end
+
 langs = require 'langs'
 function getLocalizedText(key)
 	local data
@@ -8,6 +27,7 @@ function getLocalizedText(key)
 	end
 	return data and data[key] or key
 end
+local text = getLocalizedText
 
 rng = love.math.newRandomGenerator()
 scenemanager = require('scenemanager')
@@ -32,7 +52,7 @@ gfx.setLineWidth(3)
 gfx.setLineStyle('rough')
 gfx.setLineJoin('miter')
 gfx.setDefaultFilter('nearest', 'nearest')
-love.keyboard.setKeyRepeat(false)
+-- love.keyboard.setKeyRepeat(false)
 
 hexaplex_blacks = {
 	{love.math.colorFromBytes(29, 43, 83, 255)},
@@ -164,9 +184,11 @@ function savecheck()
 		save = json.decode(love.filesystem.read('data.json'))
 	end
 	if save == nil then save = {} end
-	save.scale = save.scale or 1
-	if save.gamepad == nil then save.gamepad = false end
-
+	-- save.scale = save.scale or 1
+	save.scale = 1
+	-- if save.gamepad == nil then save.gamepad = false end
+	save.gamepad = true
+	save.keyboard = 1
 	if save.keyboard ~= nil then
 		if save.keyboard == 1 then
 			save.up = 'up'
@@ -286,7 +308,7 @@ function fademusic(delay)
 	if music ~= nil then
 		local anim_fade = timer.tween(delay/700, volume, {0}, 'linear', function()
 			if music ~= nil then
-				music:pause()
+				-- music:pause()
 				music = nil
 			end
 		end)
@@ -456,11 +478,12 @@ function shakies_y(time, int)
 end
 
 function love.keypressed(key)
-	if gamepad then
-		save.gamepad = true
-	else
-		save.gamepad = false
-	end
+	-- if gamepad then
+	-- 	save.gamepad = true
+	-- else
+	-- 	save.gamepad = false
+	-- end
+	save.gamepad = true
 	gamepad = false
 	if key == 'escape' and vars ~= nil then
 		if not vars.can_do_stuff and vars.handler ~= 'quit' and vars.handler ~= 'keyboard' then
@@ -495,6 +518,13 @@ function love.gamepadpressed(joystick, button)
 			key = save.left
 		elseif button == 'dpright' then
 			key = save.right
+		elseif button == 'up' then
+			key = save.up
+		elseif button == 'down' then
+			key = save.down
+		elseif button == 'left' then
+			key = save.left
+		elseif button == 'right' then
 		elseif button == 'a' then
 			key = save.primary
 		elseif button == 'b' then
@@ -502,11 +532,12 @@ function love.gamepadpressed(joystick, button)
 		end
 		gamepad = true
 		love.keypressed(key)
+		-- love.event.push("keypressed", key)
 	end
 end
 
 function rumble(left, right, duration)
-	if save.rumble and save.gamepad and current_joystick:isVibrationSupported() then
+	if save.rumble and save.gamepad and current_joystick and current_joystick:isVibrationSupported() then
 		current_joystick:setVibration(left, right, duration)
 	end
 end
@@ -533,20 +564,22 @@ function love.update(dt)
 	end
 end
 
-function love.draw()
+function love.draw(screen)
+	if screen == "bottom" then return end
 	gfx.setColor(1, 1, 1, 1)
 
 	local lbw = false
 	local lbh = false
 
-	local ww, wh, flags = love.window.getMode()
+	-- local ww, wh, flags = love.window.getMode()
+	local ww, wh = 400, 240
 	if ww > 400 * scale then lbw = true end
 	if wh > 240 * scale then lbh = true end
 
 	if lbw then gfx.translate(((floor(ww / 2) * 2) - (400 * scale)) / 2, 0) end
 	if lbh then gfx.translate(0, ((floor(wh / 2) * 2) - (240 * scale)) / 2) end
 
-	gfx.setScissor(((lbw and (((floor(ww / 2) * 2) - (400 * scale)) / 2)) or 0) + (vars.anim_shakies ~= nil and (floor(vars.shakies) * scale) or 0), ((lbh and (((floor(wh / 2) * 2) - (240 * scale)) / 2)) or 0) + (vars.anim_shakies_y ~= nil and (floor(vars.shakies_y) * scale) or 0), 400 * scale, 240 * scale)
+	-- gfx.setScissor(((lbw and (((floor(ww / 2) * 2) - (400 * scale)) / 2)) or 0) + (vars.anim_shakies ~= nil and (floor(vars.shakies) * scale) or 0), ((lbh and (((floor(wh / 2) * 2) - (240 * scale)) / 2)) or 0) + (vars.anim_shakies_y ~= nil and (floor(vars.shakies_y) * scale) or 0), 400 * scale, 240 * scale)
 
 	gfx.scale(scale)
 

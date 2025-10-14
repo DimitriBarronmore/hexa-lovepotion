@@ -6,10 +6,73 @@ options = require('options')
 credits = require('credits')
 jukebox = require('jukebox')
 
+local function gamepadpressed(self, joystick, button)
+	if vars.handler ~= "remap" then
+		current_joystick = joystick
+		local key
+		if button == 'start' then
+			key = 'escape'
+		elseif button == 'x' then
+			key = save.tertiary
+		elseif button == 'y' then
+			key = save.quaternary
+		elseif button == 'dpup' then
+			key = save.up
+		elseif button == 'dpdown' then
+			key = save.down
+		elseif button == 'dpleft' then
+			key = save.left
+		elseif button == 'dpright' then
+			key = save.right
+		elseif button == 'up' then
+			key = save.up
+		elseif button == 'down' then
+			key = save.down
+		elseif button == 'left' then
+			key = save.left
+		elseif button == 'right' then
+		elseif button == 'a' then
+			key = save.primary
+		elseif button == 'b' then
+			key = save.secondary
+		end
+		gamepad = true
+		self:keypressed(key)
+		-- love.event.push("keypressed", key)
+	end
+end
+
+function screen_block_deco(f)
+	return function(self, screen)
+		if screen ~= "bottom" then
+			f(self)
+		end
+	end
+end
+
+game.gamepadpressed = gamepadpressed
+missions.gamepadpressed = gamepadpressed
+statistics.gamepadpressed = gamepadpressed
+howtoplay.gamepadpressed = gamepadpressed
+options.gamepadpressed = gamepadpressed
+credits.gamepadpressed = gamepadpressed
+jukebox.gamepadpressed = gamepadpressed
+
+game.draw = screen_block_deco(game.draw)
+missions.draw = screen_block_deco(missions.draw)
+statistics.draw = screen_block_deco(statistics.draw)
+howtoplay.draw = screen_block_deco(howtoplay.draw)
+options.draw = screen_block_deco(options.draw)
+credits.draw = screen_block_deco(credits.draw)
+jukebox.draw = screen_block_deco(jukebox.draw)
+
+
 local gfx = love.graphics
 local floor = math.floor
 local text = getLocalizedText
 local title = {}
+
+title.gamepadpressed = gamepadpressed
 
 function title:enter(current, ...)
 	love.window.setTitle(text('hexa'))
@@ -89,6 +152,42 @@ function title:enter(current, ...)
 
 	newmusic('audio/music/title.mp3', true)
 end
+
+-- function title:gamepadpressed(joypad, button)
+-- 		if vars.handler ~= "remap" then
+-- 		current_joystick = joystick
+-- 		local key
+-- 		if button == 'start' then
+-- 			key = 'escape'
+-- 		elseif button == 'x' then
+-- 			key = save.tertiary
+-- 		elseif button == 'y' then
+-- 			key = save.quaternary
+-- 		elseif button == 'dpup' then
+-- 			key = save.up
+-- 		elseif button == 'dpdown' then
+-- 			key = save.down
+-- 		elseif button == 'dpleft' then
+-- 			key = save.left
+-- 		elseif button == 'dpright' then
+-- 			key = save.right
+-- 		elseif button == 'up' then
+-- 			key = save.up
+-- 		elseif button == 'down' then
+-- 			key = save.down
+-- 		elseif button == 'left' then
+-- 			key = save.left
+-- 		elseif button == 'right' then
+-- 		elseif button == 'a' then
+-- 			key = save.primary
+-- 		elseif button == 'b' then
+-- 			key = save.secondary
+-- 		end
+-- 		gamepad = true
+-- 		self:keypressed(key)
+-- 		-- love.event.push("keypressed", key)
+-- 	end
+-- end
 
 function title:keypressed(key)
 	if not transitioning and not vars.waiting then
@@ -293,5 +392,7 @@ function title:draw()
 
 	draw_on_top()
 end
+
+title.draw = screen_block_deco(title.draw)
 
 return title
